@@ -6,7 +6,7 @@ class PostsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Awesome Blog'), backgroundColor: Colors.green),
+      appBar: AppBar(title: const Text('My Awesome Blog 2'), backgroundColor: Colors.green),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: const <Widget>[
