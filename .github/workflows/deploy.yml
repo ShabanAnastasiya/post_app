@@ -31,7 +31,7 @@ jobs:
 
       # --- ШАГ 3: Устанавливаем CLI ---
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli-action@v1
+        uses: supabase/setup-cli-action@v2
 
       # --- ШАГ 4: Диагностика после установки ---
       - name: Check environment and CLI version
@@ -41,7 +41,7 @@ jobs:
           echo "================================================="
           echo "GitHub Event: ${{ github.event_name }}"
           echo "Branch/Ref: ${{ github.ref }}"
-          echo "Is SUPABASE_ACCESS_TOKEN set? (should not be empty): ${{ env.SUPABASE_ACCESS_TOKEN != '' }}"
+          echo "Is ACTION_TOKEN set? (should not be empty): ${{ env.ACTION_TOKEN != '' }}"
           echo "---"
           echo "Checking Supabase CLI version..."
           supabase -v
