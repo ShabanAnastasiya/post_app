@@ -1,0 +1,47 @@
+name: Deploy Supabase Migrations
+
+# Триггеры: запускать этот workflow при пуше в ветки main или develop
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch: # Позволяет запускать вручную из интерфейса GitHub
+
+jobs:
+  deploy-migrations:
+    name: Deploy Database Migrations
+    runs-on: ubuntu-latest # Запускать на виртуальной машине с Ubuntu
+
+    # Переменные окружения, которые будут доступны во всех шагах
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+    steps:
+      # Шаг 1: Клонирование репозитория
+      # Скачиваем код нашей ветки на виртуальную машину
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Шаг 2: Установка Supabase CLI
+      # Используем официальный Action от Supabase для установки CLI
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli-action@v1
+
+      # Шаг 3: Развертывание миграций в DEV
+      # Этот шаг выполнится ТОЛЬКО если событие произошло в ветке 'develop'
+      - name: Deploy migrations to DEV
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          echo "Deploying to DEV environment..."
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID_DEV }}
+          supabase db push --password ${{ secrets.SUPABASE_DB_PASSWORD_DEV }}
+
+      # Шаг 4: Развертывание миграций в PROD
+      # Этот шаг выполнится ТОЛЬКО если событие произошло в ветке 'main'
+      - name: Deploy migrations to PROD
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deploying to PROD environment..."
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID_PROD }}
+          supabase db push --password ${{ secrets.SUPABASE_DB_PASSWORD_PROD }}
